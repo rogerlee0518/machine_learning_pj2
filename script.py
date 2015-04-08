@@ -6,6 +6,54 @@ import scipy.io
 import matplotlib.pyplot as plt
 import pickle
 
+def ldaLearn(X,y):
+    # Inputs
+    # X - a N x d matrix with each row corresponding to a training example
+    # y - a N x 1 column vector indicating the labels for each training example
+    #
+    # Outputs
+    # means - A d x k matrix containing learnt means for each of the k classes
+    # covmat - A single d x d learnt covariance matrix 
+    
+    # IMPLEMENT THIS METHOD
+    
+    return means,covmat
+
+def qdaLearn(X,y):
+    # Inputs
+    # X - a N x d matrix with each row corresponding to a training example
+    # y - a N x 1 column vector indicating the labels for each training example
+    #
+    # Outputs
+    # means - A d x k matrix containing learnt means for each of the k classes
+    # covmats - A list of k d x d learnt covariance matrices for each of the k classes
+    
+    # IMPLEMENT THIS METHOD
+    
+    return means,covmats
+
+def ldaTest(means,covmat,Xtest,ytest):
+    # Inputs
+    # means, covmat - parameters of the LDA model
+    # Xtest - a N x d matrix with each row corresponding to a test example
+    # ytest - a N x 1 column vector indicating the labels for each test example
+    # Outputs
+    # acc - A scalar accuracy value
+    
+    # IMPLEMENT THIS METHOD
+    return acc
+
+def qdaTest(means,covmats,Xtest,ytest):
+    # Inputs
+    # means, covmats - parameters of the QDA model
+    # Xtest - a N x d matrix with each row corresponding to a test example
+    # ytest - a N x 1 column vector indicating the labels for each test example
+    # Outputs
+    # acc - A scalar accuracy value
+    
+    # IMPLEMENT THIS METHOD
+    return acc
+	
 def learnOLERegression(X,y):
     # Inputs:                                                         
     # X = N x d 
@@ -13,17 +61,22 @@ def learnOLERegression(X,y):
     # Output: 
     # w = d x 1                                                                
     # IMPLEMENT THIS METHOD 
-    # w = (X.T*X)^-1 * X.T * y (lec.22)  
-    print(X.shape[1]);
-    print(y.shape[1]);                                     
+    # w = (X.T*X)^-1 * X.T * y (lec.22)                                    
     A = np.linalg.inv(np.dot(X.T, X));
-    print(A.shape[0]);
     B = np.dot(A, X.T);
-    print(B.shape[0]);
     w = np.dot(B, y);
-    print(w.shape[1]);
     return w;
 
+def learnRidgeERegression(X,y,lambd):
+    # Inputs:
+    # X = N x d                                                               
+    # y = N x 1 
+    # lambd = ridge parameter (scalar)
+    # Output:                                                                  
+    # w = d x 1                                                                
+
+    # IMPLEMENT THIS METHOD                                                   
+    return w
 
 def testOLERegression(w,Xtest,ytest):
     # Inputs:
@@ -41,6 +94,24 @@ def testOLERegression(w,Xtest,ytest):
     rmse = D/Xtest.shape[0];            #Divide result by N
     return rmse
 
+def regressionObjVal(w, X, y, lambd):
+
+    # compute squared error (scalar) and gradient of squared error with respect
+    # to w (vector) for the given data X and y and the regularization parameter
+    # lambda                                                                  
+
+    # IMPLEMENT THIS METHOD                                             
+    return error, error_grad
+
+def mapNonLinear(x,p):
+    # Inputs:                                                                  
+    # x - a single column vector (N x 1)                                       
+    # p - integer (>= 0)                                                       
+    # Outputs:                                                                 
+    # Xd - (N x (d+1))                                                         
+    # IMPLEMENT THIS METHOD
+    return Xd
+	
 # Main script
 '''
 # Problem 1

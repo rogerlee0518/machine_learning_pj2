@@ -128,7 +128,6 @@ def mapNonLinear(x,p):
 	
 # Main script
 
-'''
 # Problem 1
 # load the sample data                                                                 
 X,y,Xtest,ytest = pickle.load(open('sample.pickle','rb'),encoding = 'latin1')            
@@ -199,4 +198,3 @@ for p in range(pmax):
     rmses5[p,1] = testOLERegression(w_d2,Xdtest,ytest)
 plt.plot(range(pmax),rmses5)
 plt.legend(('No Regularization','Regularization'))
-'''

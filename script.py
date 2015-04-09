@@ -5,7 +5,7 @@ from math import sqrt
 import scipy.io
 import matplotlib.pyplot as plt
 import pickle
-
+'''
 def ldaLearn(X,y):
     # Inputs
     # X - a N x d matrix with each row corresponding to a training example
@@ -53,7 +53,7 @@ def qdaTest(means,covmats,Xtest,ytest):
     
     # IMPLEMENT THIS METHOD
     return acc
-	
+'''
 def learnOLERegression(X,y):
     # Inputs:                                                         
     # X = N x d 
@@ -74,9 +74,14 @@ def learnRidgeERegression(X,y,lambd):
     # lambd = ridge parameter (scalar)
     # Output:                                                                  
     # w = d x 1                                                                
+    # IMPLEMENT THIS METHOD
+    # w = (((X'X)+N*lambda*I)^-1)X'y
 
-    # IMPLEMENT THIS METHOD                                                   
-    return w
+    N = X.shape[0];
+    I = np.identity(X.shape[1]);
+    C = np.dot(N, np.dot(lambd, I));
+    E = np.linalg.inv(np.dot(X.T, X) + C);
+    return np.dot(E, np.dot(X.T, y));
 
 def testOLERegression(w,Xtest,ytest):
     # Inputs:
@@ -94,29 +99,60 @@ def testOLERegression(w,Xtest,ytest):
     rmse = D/Xtest.shape[0];            #Divide result by N
     return rmse
 
+
 def regressionObjVal(w, X, y, lambd):
 
 	# compute squared error (scalar) and gradient of squared error with respect
 	# to w (vector) for the given data X and y and the regularization parameter
 	# lambda                                                                  
-	# IMPLEMENT THIS METHOD                                             
-	N = X.shape(0)		# N
-	xw = np.dot(X,w)	# X*w
-	# 1/2N * (y-xw)^T * (y-xw)
-	err_part1 = np.sum(np.dot(np.transpose(y-xw),(y-xw)))/2*N
-	# 1/2 * lambd * w^T * w
-	err_part2 = (lambd*(np.dot(np.transpose(w),w)))/2
-	# J(w)
-	error = err_part1 + err_part2
-	xtx = np.dot(np.transpose(X),X)
-	ytx = np.dot(np.transpose(y),X)
-	# 1/N * [w^T * (x^T * x) - y^T * x]
-	err_grad1 = (np.dot(np.transpose(w),xtx)-ytx) / N
-	# lambd * w
-	err_grad2 = lambd * w
-	error_grad = err_grad1 + err_grad2
-	return error, error_grad
-
+	# IMPLEMENT THIS METHOD  
+    '''
+    #SEAN CODE                                  
+    N = X.shape(0)		# N
+    xw = np.dot(X,w)	# X*w
+    # 1/2N * (y-xw)^T * (y-xw)
+    err_part1 = np.sum(np.dot(np.transpose(y-xw),(y-xw)))/2*N
+    # 1/2 * lambd * w^T * w
+    err_part2 = (lambd*(np.dot(np.transpose(w),w)))/2
+    # J(w)
+    error = err_part1 + err_part2
+    xtx = np.dot(np.transpose(X),X)
+    ytx = np.dot(np.transpose(y),X)
+    # 1/N * [w^T * (x^T * x) - y^T * x]
+    err_grad1 = (np.dot(np.transpose(w),xtx)-ytx) / N
+    # lambd * w
+    err_grad2 = lambd * w
+    error_grad = err_grad1 + err_grad2
+    
+    #CALVIN CODE
+    N = X.shape[0];
+    A = np.dot(y.T, y);
+    B = np.dot(2, np.dot(y.T, np.dot(X, w)));
+    C = np.dot(w.T, np.dot(X.T, np.dot(X, w)));
+    D = np.dot(np.dot(1/2, N), A+B+C);
+    E = np.dot(1/2, np.dot(lambd, np.dot(w.T, w)));
+    error = D + E;
+    
+    F = np.dot(w.T, np.dot(X.T, X));
+    G = np.dot(y.T, X);
+    H = np.dot(1/N, F+G);
+    error_grad = H + np.dot(lambd, w);
+    return error, error_grad
+'''
+    #RANDOM CODE
+    N = X.shape[0];
+    A = np.dot(X, w);
+    B = pow(y-A, 2);
+    C = np.dot(lambd, np.dot(w.T, w));
+    error = np.dot(1/N, np.sum(B)+C);
+    
+    D = np.dot(X, w);
+    E = np.dot((2/N), np.dot(D, X));
+    F = np.dot(lambd, w.T);
+    error_grad = (E+F).T;
+    
+    return error, error_grad;
+'''  
 def mapNonLinear(x,p):
     # Inputs:                                                                  
     # x - a single column vector (N x 1)                                       
@@ -125,13 +161,13 @@ def mapNonLinear(x,p):
     # Xd - (N x (d+1))                                                         
     # IMPLEMENT THIS METHOD
     return Xd
-	
+'''
 # Main script
 
 # Problem 1
 # load the sample data                                                                 
-X,y,Xtest,ytest = pickle.load(open('sample.pickle','rb'),encoding = 'latin1')            
-
+X,y,Xtest,ytest = pickle.load(open('sample.pickle','rb'))            
+'''
 # LDA
 means,covmat = ldaLearn(X,y)
 ldaacc = ldaTest(means,covmat,Xtest,ytest)
@@ -142,12 +178,13 @@ qdaacc = qdaTest(means,covmats,Xtest,ytest)
 print('QDA Accuracy = '+str(qdaacc))
 
 # Problem 2
+'''
 
-X,y,Xtest,ytest = pickle.load(open('diabetes.pickle','rb'))   
+#X,y,Xtest,ytest = pickle.load(open('diabetes.pickle','rb'))
 # add intercept
 X_i = np.concatenate((np.ones((X.shape[0],1)), X), axis=1)
 Xtest_i = np.concatenate((np.ones((Xtest.shape[0],1)), Xtest), axis=1)
-
+'''
 w = learnOLERegression(X,y)
 mle = testOLERegression(w,Xtest,ytest)
 
@@ -163,10 +200,11 @@ lambdas = np.linspace(0, 0.004, num=k)
 i = 0
 rmses3 = np.zeros((k,1))
 for lambd in lambdas:
-    w_l = learnRidgeRegression(X_i,y,lambd)
+    w_l = learnRidgeERegression(X_i,y,lambd)
     rmses3[i] = testOLERegression(w_l,Xtest_i,ytest)
     i = i + 1
 plt.plot(lambdas,rmses3)
+'''
 
 # Problem 4
 k = 21
@@ -185,6 +223,7 @@ for lambd in lambdas:
     i = i + 1
 plt.plot(lambdas,rmses4)
 
+'''
 # Problem 5
 pmax = 7
 lambda_opt = lambdas[np.argmin(rmses4)]
@@ -198,3 +237,4 @@ for p in range(pmax):
     rmses5[p,1] = testOLERegression(w_d2,Xdtest,ytest)
 plt.plot(range(pmax),rmses5)
 plt.legend(('No Regularization','Regularization'))
+'''

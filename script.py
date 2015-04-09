@@ -127,6 +127,7 @@ def regressionObjVal(w, X, y, lambd):
         print (error)
         print ('error gradient')
         print (error_grad)
+        error_grad = np.array(error_grad).reshape(-1)
         return error, error_grad;
 '''
         #CALVIN CODE
@@ -155,8 +156,7 @@ def regressionObjVal(w, X, y, lambd):
         E = np.dot((2/N), np.dot(D, X));
         F = np.dot(lambd, w.T);
         error_grad = (E+F).T;
-'''
-'''  
+
 def mapNonLinear(x,p):
         # Inputs:                                                                  
         # x - a single column vector (N x 1)                                       
@@ -164,6 +164,11 @@ def mapNonLinear(x,p):
         # Outputs:                                                                 
         # Xd - (N x (d+1))                                                         
         # IMPLEMENT THIS METHOD
+        A = np.shape(x)[0]
+        Xd = np.zeros((A,p+1))
+        for i in range(Xd.shape[1]):
+            for k in range(x.shape[0]):
+                Xd[k][i] = pow(x[k],i)
         return Xd
 '''
 # Main script

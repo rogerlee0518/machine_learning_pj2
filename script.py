@@ -96,11 +96,10 @@ def testOLERegression(w,Xtest,ytest):
 
 def regressionObjVal(w, X, y, lambd):
 
-    # compute squared error (scalar) and gradient of squared error with respect
-    # to w (vector) for the given data X and y and the regularization parameter
-    # lambda                                                                  
-
-    # IMPLEMENT THIS METHOD                                             
+	# compute squared error (scalar) and gradient of squared error with respect
+	# to w (vector) for the given data X and y and the regularization parameter
+	# lambda                                                                  
+	# IMPLEMENT THIS METHOD                                             
 	N = X.shape(0)		# N
 	xw = np.dot(X,w)	# X*w
 	# 1/2N * (y-xw)^T * (y-xw)
@@ -109,7 +108,6 @@ def regressionObjVal(w, X, y, lambd):
 	err_part2 = (lambd*(np.dot(np.transpose(w),w)))/2
 	# J(w)
 	error = err_part1 + err_part2
-
 	xtx = np.dot(np.transpose(X),X)
 	ytx = np.dot(np.transpose(y),X)
 	# 1/N * [w^T * (x^T * x) - y^T * x]
@@ -117,7 +115,7 @@ def regressionObjVal(w, X, y, lambd):
 	# lambd * w
 	err_grad2 = lambd * w
 	error_grad = err_grad1 + err_grad2
-    return error, error_grad
+	return error, error_grad
 
 def mapNonLinear(x,p):
     # Inputs:                                                                  
@@ -129,6 +127,7 @@ def mapNonLinear(x,p):
     return Xd
 	
 # Main script
+
 '''
 # Problem 1
 # load the sample data                                                                 
@@ -142,7 +141,7 @@ print('LDA Accuracy = '+str(ldaacc))
 means,covmats = qdaLearn(X,y)
 qdaacc = qdaTest(means,covmats,Xtest,ytest)
 print('QDA Accuracy = '+str(qdaacc))
-'''
+
 # Problem 2
 
 X,y,Xtest,ytest = pickle.load(open('diabetes.pickle','rb'))   
@@ -158,7 +157,7 @@ mle_i = testOLERegression(w_i,Xtest_i,ytest)
 
 print('RMSE without intercept '+str(mle))
 print('RMSE with intercept '+str(mle_i))
-'''
+
 # Problem 3
 k = 21
 lambdas = np.linspace(0, 0.004, num=k)
@@ -186,7 +185,6 @@ for lambd in lambdas:
     rmses4[i] = testOLERegression(w_l_1,Xtest_i,ytest)
     i = i + 1
 plt.plot(lambdas,rmses4)
-
 
 # Problem 5
 pmax = 7

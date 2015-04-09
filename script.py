@@ -101,6 +101,22 @@ def regressionObjVal(w, X, y, lambd):
     # lambda                                                                  
 
     # IMPLEMENT THIS METHOD                                             
+	N = X.shape(0)		# N
+	xw = np.dot(X,w)	# X*w
+	# 1/2N * (y-xw)^T * (y-xw)
+	err_part1 = np.sum(np.dot(np.transpose(y-xw),(y-xw)))/2*N
+	# 1/2 * lambd * w^T * w
+	err_part2 = (lambd*(np.dot(np.transpose(w),w)))/2
+	# J(w)
+	error = err_part1 + err_part2
+
+	xtx = np.dot(np.transpose(X),X)
+	ytx = np.dot(np.transpose(y),X)
+	# 1/N * [w^T * (x^T * x) - y^T * x]
+	err_grad1 = (np.dot(np.transpose(w),xtx)-ytx) / N
+	# lambd * w
+	err_grad2 = lambd * w
+	error_grad = err_grad1 + err_grad2
     return error, error_grad
 
 def mapNonLinear(x,p):

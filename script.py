@@ -303,7 +303,7 @@ for lambd in lambdas:
 	rmses3[i] = testOLERegression(w_l,Xtest_i,ytest)
 	i = i + 1
 plt.plot(lambdas,rmses3)
-
+plt.show()
 
 # Problem 4
 k = 101
@@ -321,6 +321,7 @@ for lambd in lambdas:
 	rmses4[i] = testOLERegression(w_l_1,Xtest_i,ytest)
 	i = i + 1
 plt.plot(lambdas,rmses4)
+plt.show()
 
 
 # Problem 5

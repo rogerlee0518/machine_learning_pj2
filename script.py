@@ -228,7 +228,6 @@ def regressionObjVal(w, X, y, lambd):
 
 	#SEAN CODE                                  
 	N = X.shape[0]		# N
-	w = np.reshape(w, (w.size, 1))
 	xw = np.dot(X,w)	# X*w
 	# 1/2N * (y-xw)^T * (y-xw)
 	err_part1 = (np.sum(np.dot(np.transpose(y-xw),(y-xw))))/(2*N)
@@ -241,15 +240,9 @@ def regressionObjVal(w, X, y, lambd):
 	# 1/N * [w^T * (x^T * x) - y^T * x]
 	err_grad1 = (np.dot(np.transpose(w),xtx)-ytx) / N
 	# lambd * w
-	err_grad2 = lambd * w
+	err_grad2 = lambd * np.tranpose(w)
 	error_grad = err_grad1 + err_grad2
-	print ('error')
-	print (error)
-	print ('error gradient')
-	print (error_grad)
-	#error_grad = np.array(error_grad).reshape(-1)
-	#error_grad = np.reshape(error_grad, ((error_grad.size),1))
-	#error_grad = error_grad.flatten()
+	error_grad = np.array(error_grad).reshape(-1)
 	return error, error_grad;
 '''
 	#CALVIN CODE

@@ -230,20 +230,21 @@ def regressionObjVal(w, X, y, lambd):
 	N = X.shape[0]		# N
 	xw = np.dot(X,w)	# X*w
 	# 1/2N * (y-xw)^T * (y-xw)
-	err_part1 = (np.sum(np.dot(np.transpose(y-xw),(y-xw))))/(2*N)
+	err_part1 = (np.sum(np.dot(np.transpose(y-xw),(y-xw))))*(1.0/(2*N))
 	# 1/2 * lambd * w^T * w
-	err_part2 = (lambd*(np.dot(np.transpose(w),w)))/2
+	err_part2 = (lambd*(np.dot(np.transpose(w),w)))*(1.0/2.0)
 	# J(w)
 	error = err_part1 + err_part2
 	xtx = np.dot(np.transpose(X),X)
 	ytx = np.dot(np.transpose(y),X)
 	# 1/N * [w^T * (x^T * x) - y^T * x]
-	err_grad1 = (np.dot(np.transpose(w),xtx)-ytx) / N
+	err_grad1 = (np.dot(np.transpose(w),xtx)-ytx)*(1.0/N)
 	# lambd * w
-	err_grad2 = lambd * np.tranpose(w)
+	err_grad2 = lambd * w
 	error_grad = err_grad1 + err_grad2
-	error_grad = np.array(error_grad).reshape(-1)
-	return error, error_grad;
+	error_grad = np.linalg.inv(error_grad)
+	error_grad = error_grad.flatten()
+	return error, error_grad
 '''
 	#CALVIN CODE
 	N = X.shape[0];
@@ -290,7 +291,7 @@ def mapNonLinear(x,p):
 
 # Problem 1
 # load the sample data                                                                 
-#X,y,Xtest,ytest = pickle.load(open('/home/sean/code/school/cse474/machine_learning_pj2/sample.pickle','rb'))            
+#X,y,Xtest,ytest = pickle.load(open('sample.pickle','rb'))            
 '''
 # LDA
 means,covmat = ldaLearn(X,y)
@@ -304,7 +305,7 @@ print('QDA Accuracy = '+str(qdaacc))
 # Problem 2
 '''
 
-X,y,Xtest,ytest = pickle.load(open('diabetes.pickle','rb'))
+X,y,Xtest,ytest = pickle.load(open('/home/sean/code/school/cse474/machine_learning_pj2/diabetes.pickle','rb'))
 # add intercept
 X_i = np.concatenate((np.ones((X.shape[0],1)), X), axis=1)
 Xtest_i = np.concatenate((np.ones((Xtest.shape[0],1)), Xtest), axis=1)
@@ -331,7 +332,7 @@ plt.plot(lambdas,rmses3)
 '''
 
 # Problem 4
-k = 21
+k = 101
 lambdas = np.linspace(0, 0.004, num=k)
 i = 0
 rmses4 = np.zeros((k,1))

@@ -5,16 +5,17 @@ from math import sqrt
 import scipy.io
 import matplotlib.pyplot as plt
 import pickle
+
 def ldaLearn(X,y):
-    # Inputs
-    # X - a N x d matrix with each row corresponding to a training example
-    # y - a N x 1 column vector indicating the labels for each training example
-    #
-    # Outputs
-    # means - A d x k matrix containing learnt means for each of the k classes
-    # covmat - A single d x d learnt covariance matrix 
-    
-    # IMPLEMENT THIS METHOD
+	# Inputs
+	# X - a N x d matrix with each row corresponding to a training example
+	# y - a N x 1 column vector indicating the labels for each training example
+	#
+	# Outputs
+	# means - A d x k matrix containing learnt means for each of the k classes
+	# covmat - A single d x d learnt covariance matrix 
+
+	# IMPLEMENT THIS METHOD
 	N = X.shape[0]
 	d = X.shape[1]
 	classesnum=0
@@ -38,24 +39,24 @@ def ldaLearn(X,y):
 					meanarray[i][k]=meanarray[i][k]+X[j][k]
 		for p in range(0,X.shape[1]):
 			meanarray[i][p]=meanarray[i][p]/tempcount
-	
-    # initialization
+
+	# initialization
 	means=np.zeros((d,classesarray.shape[0]))
 	for i in range(0,meanarray.shape[0]):
 		for j in range(0,meanarray.shape[1]):
 			means[j][i]=meanarray[i][j]
-	
+
 	return means, np.cov(X.T)
-    #return means,covmat
+#return means,covmat
 
 def qdaLearn(X,y):
-    # Inputs
-    # X - a N x d matrix with each row corresponding to a training example
-    # y - a N x 1 column vector indicating the labels for each training example
-    #
-    # Outputs
-    # means - A d x k matrix containing learnt means for each of the k classes
-    # covmats - A list of k d x d learnt covariance matrices for each of the k classes
+	# Inputs
+	# X - a N x d matrix with each row corresponding to a training example
+	# y - a N x 1 column vector indicating the labels for each training example
+	#
+	# Outputs
+	# means - A d x k matrix containing learnt means for each of the k classes
+	# covmats - A list of k d x d learnt covariance matrices for each of the k classes
 	N = X.shape[0]
 	d = X.shape[1]
 	classesnum=0
@@ -79,13 +80,13 @@ def qdaLearn(X,y):
 					meanarray[i][k]=meanarray[i][k]+X[j][k]
 		for p in range(0,X.shape[1]):
 			meanarray[i][p]=meanarray[i][p]/tempcount
-	
-    # initialization
+
+	# initialization
 	means=np.zeros((d,classesarray.shape[0]))
 	for i in range(0,meanarray.shape[0]):
 		for j in range(0,meanarray.shape[1]):
 			means[j][i]=meanarray[i][j]
-	
+
 	covmats=[np.zeros((d,d))]*classesnum
 	for i in range(0,classesarray.shape[0]):
 		count=1
@@ -99,14 +100,14 @@ def qdaLearn(X,y):
 	return means,covmats
 
 def ldaTest(means,covmat,Xtest,ytest):
-    # Inputs
-    # means, covmat - parameters of the LDA model
-    # Xtest - a N x d matrix with each row corresponding to a test example
-    # ytest - a N x 1 column vector indicating the labels for each test example
-    # Outputs
-    # acc - A scalar accuracy value
-    
-    # IMPLEMENT THIS METHOD
+	# Inputs
+	# means, covmat - parameters of the LDA model
+	# Xtest - a N x d matrix with each row corresponding to a test example
+	# ytest - a N x 1 column vector indicating the labels for each test example
+	# Outputs
+	# acc - A scalar accuracy value
+
+	# IMPLEMENT THIS METHOD
 	covmatint = np.linalg.inv(covmat)
 	covmatdet = np.linalg.det(covmat)
 	meansT=means.T
@@ -135,16 +136,16 @@ def ldaTest(means,covmat,Xtest,ytest):
 	acc = acc/temp.shape[0]
 	# IMPLEMENT THIS METHOD
 	return acc
-		
+
 def qdaTest(means,covmats,Xtest,ytest):
-    # Inputs
-    # means, covmat - parameters of the LDA model
-    # Xtest - a N x d matrix with each row corresponding to a test example
-    # ytest - a N x 1 column vector indicating the labels for each test example
-    # Outputs
-    # acc - A scalar accuracy value
-    
-    # IMPLEMENT THIS METHOD
+	# Inputs
+	# means, covmat - parameters of the LDA model
+	# Xtest - a N x d matrix with each row corresponding to a test example
+	# ytest - a N x 1 column vector indicating the labels for each test example
+	# Outputs
+	# acc - A scalar accuracy value
+
+	# IMPLEMENT THIS METHOD
 	covmatint = np.linalg.inv(covmat)
 	covmatdet = np.linalg.det(covmat)
 	meansT=means.T
@@ -173,6 +174,7 @@ def qdaTest(means,covmats,Xtest,ytest):
 	acc = acc/temp.shape[0]
 	# IMPLEMENT THIS METHOD
 	return acc
+
 def learnOLERegression(X,y):
 	# Inputs:                                                         
 	# X = N x d 
@@ -265,8 +267,7 @@ def mapNonLinear(x,p):
 
 # Problem 1
 # load the sample data                                                                 
-#X,y,Xtest,ytest = pickle.load(open('sample.pickle','rb'))            
-'''
+X,y,Xtest,ytest = pickle.load(open('sample.pickle','rb'))            
 # LDA
 means,covmat = ldaLearn(X,y)
 ldaacc = ldaTest(means,covmat,Xtest,ytest)
@@ -277,9 +278,8 @@ qdaacc = qdaTest(means,covmats,Xtest,ytest)
 print('QDA Accuracy = '+str(qdaacc))
 
 # Problem 2
-'''
 
-X,y,Xtest,ytest = pickle.load(open('/home/sean/code/school/cse474/machine_learning_pj2/diabetes.pickle','rb'))
+X,y,Xtest,ytest = pickle.load(open('diabetes.pickle','rb'))
 # add intercept
 X_i = np.concatenate((np.ones((X.shape[0],1)), X), axis=1)
 Xtest_i = np.concatenate((np.ones((Xtest.shape[0],1)), Xtest), axis=1)
@@ -294,7 +294,7 @@ print('RMSE without intercept '+str(mle))
 print('RMSE with intercept '+str(mle_i))
 
 # Problem 3
-k = 21
+k = 101
 lambdas = np.linspace(0, 0.004, num=k)
 i = 0
 rmses3 = np.zeros((k,1))
@@ -310,7 +310,7 @@ k = 101
 lambdas = np.linspace(0, 0.004, num=k)
 i = 0
 rmses4 = np.zeros((k,1))
-opts = {'maxiter' : 100}    # Preferred value.                                                
+opts = {'maxiter' : 100}    # Preferred value.
 w_init = np.zeros((X_i.shape[1],1))
 for lambd in lambdas:
 	args = (X_i, y, lambd)

@@ -218,7 +218,6 @@ def testOLERegression(w,Xtest,ytest):
 	rmse = D/Xtest.shape[0];            #Divide result by N
 	return rmse
 
-
 def regressionObjVal(w, X, y, lambd):
 
 	# compute squared error (scalar) and gradient of squared error with respect
@@ -228,6 +227,7 @@ def regressionObjVal(w, X, y, lambd):
 
 	#SEAN CODE                                  
 	N = X.shape[0]		# N
+	y = y.reshape(242,)   
 	xw = np.dot(X,w)	# X*w
 	# 1/2N * (y-xw)^T * (y-xw)
 	err_part1 = (np.sum(np.dot(np.transpose(y-xw),(y-xw))))*(1.0/(2*N))
@@ -242,36 +242,10 @@ def regressionObjVal(w, X, y, lambd):
 	# lambd * w
 	err_grad2 = lambd * w
 	error_grad = err_grad1 + err_grad2
-	error_grad = np.linalg.inv(error_grad)
+	#error_grad = np.linalg.inv(error_grad)
 	error_grad = error_grad.flatten()
 	return error, error_grad
-'''
-	#CALVIN CODE
-	N = X.shape[0];
-	A = np.dot(y.T, y);
-	B = np.dot(2, np.dot(y.T, np.dot(X, w)));
-	C = np.dot(w.T, np.dot(X.T, np.dot(X, w)));
-	D = np.dot(np.dot(1/2, N), A+B+C);
-	E = np.dot(1/2, np.dot(lambd, np.dot(w.T, w)));
-	error = D + E;
 
-	F = np.dot(w.T, np.dot(X.T, X));
-	G = np.dot(y.T, X);
-	H = np.dot(1/N, F+G);
-	error_grad = H + np.dot(lambd, w);
-	return error, error_grad
-
-	#RANDOM CODE
-	N = X.shape[0];
-	A = np.dot(X, w);
-	B = pow(y-A, 2);
-	C = np.dot(lambd, np.dot(w.T, w));
-	error = np.dot(1/N, np.sum(B)+C);
-
-	D = np.dot(X, w);
-	E = np.dot((2/N), np.dot(D, X));
-	F = np.dot(lambd, w.T);
-	error_grad = (E+F).T;
 
 def mapNonLinear(x,p):
 	# Inputs:                                                                  
@@ -286,7 +260,7 @@ def mapNonLinear(x,p):
 		for k in range(x.shape[0]):
 			Xd[k][i] = pow(x[k],i)
 	return Xd
-'''
+
 # Main script
 
 # Problem 1
@@ -309,7 +283,7 @@ X,y,Xtest,ytest = pickle.load(open('/home/sean/code/school/cse474/machine_learni
 # add intercept
 X_i = np.concatenate((np.ones((X.shape[0],1)), X), axis=1)
 Xtest_i = np.concatenate((np.ones((Xtest.shape[0],1)), Xtest), axis=1)
-'''
+
 w = learnOLERegression(X,y)
 mle = testOLERegression(w,Xtest,ytest)
 
@@ -329,7 +303,7 @@ for lambd in lambdas:
 	rmses3[i] = testOLERegression(w_l,Xtest_i,ytest)
 	i = i + 1
 plt.plot(lambdas,rmses3)
-'''
+
 
 # Problem 4
 k = 101
@@ -347,20 +321,19 @@ for lambd in lambdas:
 	rmses4[i] = testOLERegression(w_l_1,Xtest_i,ytest)
 	i = i + 1
 plt.plot(lambdas,rmses4)
-plt.show()
 
-'''
+
 # Problem 5
 pmax = 7
-lambda_opt = lambdas[np.argmin(rmses4)]
+lambda_opt = lambdas[np.argmin(rmses3)]
 rmses5 = np.zeros((pmax,2))
 for p in range(pmax):
 	Xd = mapNonLinear(X[:,2],p)
 	Xdtest = mapNonLinear(Xtest[:,2],p)
-	w_d1 = learnRidgeRegression(Xd,y,0)
+	w_d1 = learnRidgeERegression(Xd,y,0)
 	rmses5[p,0] = testOLERegression(w_d1,Xdtest,ytest)
-	w_d2 = learnRidgeRegression(Xd,y,lamda_opt)
+	w_d2 = learnRidgeERegression(Xd,y,lambda_opt)
 	rmses5[p,1] = testOLERegression(w_d2,Xdtest,ytest)
 plt.plot(range(pmax),rmses5)
 plt.legend(('No Regularization','Regularization'))
-'''
+plt.show()

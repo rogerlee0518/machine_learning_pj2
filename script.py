@@ -228,6 +228,7 @@ def regressionObjVal(w, X, y, lambd):
 
 	#SEAN CODE                                  
 	N = X.shape[0]		# N
+	w = np.reshape(w, (w.size, 1))
 	xw = np.dot(X,w)	# X*w
 	# 1/2N * (y-xw)^T * (y-xw)
 	err_part1 = (np.sum(np.dot(np.transpose(y-xw),(y-xw))))/(2*N)
@@ -247,8 +248,8 @@ def regressionObjVal(w, X, y, lambd):
 	print ('error gradient')
 	print (error_grad)
 	#error_grad = np.array(error_grad).reshape(-1)
-	error_grad = np.reshape(error_grad, ((error_grad.size),1))
-	error_grad = error_grad.flatten()
+	#error_grad = np.reshape(error_grad, ((error_grad.size),1))
+	#error_grad = error_grad.flatten()
 	return error, error_grad;
 '''
 	#CALVIN CODE
@@ -296,7 +297,7 @@ def mapNonLinear(x,p):
 
 # Problem 1
 # load the sample data                                                                 
-X,y,Xtest,ytest = pickle.load(open('/home/sean/code/school/cse474/machine_learning_pj2/sample.pickle','rb'))            
+#X,y,Xtest,ytest = pickle.load(open('/home/sean/code/school/cse474/machine_learning_pj2/sample.pickle','rb'))            
 '''
 # LDA
 means,covmat = ldaLearn(X,y)
@@ -310,7 +311,7 @@ print('QDA Accuracy = '+str(qdaacc))
 # Problem 2
 '''
 
-#X,y,Xtest,ytest = pickle.load(open('diabetes.pickle','rb'))
+X,y,Xtest,ytest = pickle.load(open('diabetes.pickle','rb'))
 # add intercept
 X_i = np.concatenate((np.ones((X.shape[0],1)), X), axis=1)
 Xtest_i = np.concatenate((np.ones((Xtest.shape[0],1)), Xtest), axis=1)

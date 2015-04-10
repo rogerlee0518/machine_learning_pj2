@@ -246,7 +246,9 @@ def regressionObjVal(w, X, y, lambd):
 	print (error)
 	print ('error gradient')
 	print (error_grad)
-	error_grad = np.array(error_grad).reshape(-1)
+	#error_grad = np.array(error_grad).reshape(-1)
+	error_grad = np.reshape(error_grad, ((error_grad.size),1))
+	error_grad = error_grad.flatten()
 	return error, error_grad;
 '''
 	#CALVIN CODE

@@ -5,55 +5,174 @@ from math import sqrt
 import scipy.io
 import matplotlib.pyplot as plt
 import pickle
-'''
 def ldaLearn(X,y):
-	# Inputs
-	# X - a N x d matrix with each row corresponding to a training example
-	# y - a N x 1 column vector indicating the labels for each training example
-	#
-	# Outputs
-	# means - A d x k matrix containing learnt means for each of the k classes
-	# covmat - A single d x d learnt covariance matrix 
-
-	# IMPLEMENT THIS METHOD
-
-	return means,covmat
+    # Inputs
+    # X - a N x d matrix with each row corresponding to a training example
+    # y - a N x 1 column vector indicating the labels for each training example
+    #
+    # Outputs
+    # means - A d x k matrix containing learnt means for each of the k classes
+    # covmat - A single d x d learnt covariance matrix 
+    
+    # IMPLEMENT THIS METHOD
+	N = X.shape[0]
+	d = X.shape[1]
+	classesnum=0
+	classesarray=np.zeros(1)
+	for i in range(0, y.shape[0]):
+		if y[i] not in classesarray:
+			classesnum = classesnum+1
+			classesarray=np.append(classesarray,y[i])
+	if 0 not in y:
+		classesarray=np.delete(classesarray,0)
+	else:
+		classesnum=classesnum+1
+	meanarray=np.zeros((classesarray.shape[0],d))
+	classesarray=np.sort(classesarray)
+	for i in range(0,classesarray.shape[0]):
+		tempcount=0
+		for j in range(0,y.shape[0]):
+			if classesarray[i]==y[j]:
+				tempcount=tempcount+1
+				for k in range(0,X.shape[1]):
+					meanarray[i][k]=meanarray[i][k]+X[j][k]
+		for p in range(0,X.shape[1]):
+			meanarray[i][p]=meanarray[i][p]/tempcount
+	
+    # initialization
+	means=np.zeros((d,classesarray.shape[0]))
+	for i in range(0,meanarray.shape[0]):
+		for j in range(0,meanarray.shape[1]):
+			means[j][i]=meanarray[i][j]
+	
+	return means, np.cov(X.T)
+    #return means,covmat
 
 def qdaLearn(X,y):
-	# Inputs
-	# X - a N x d matrix with each row corresponding to a training example
-	# y - a N x 1 column vector indicating the labels for each training example
-	#
-	# Outputs
-	# means - A d x k matrix containing learnt means for each of the k classes
-	# covmats - A list of k d x d learnt covariance matrices for each of the k classes
-
-	# IMPLEMENT THIS METHOD
-
+    # Inputs
+    # X - a N x d matrix with each row corresponding to a training example
+    # y - a N x 1 column vector indicating the labels for each training example
+    #
+    # Outputs
+    # means - A d x k matrix containing learnt means for each of the k classes
+    # covmats - A list of k d x d learnt covariance matrices for each of the k classes
+	N = X.shape[0]
+	d = X.shape[1]
+	classesnum=0
+	classesarray=np.zeros(1)
+	for i in range(0, y.shape[0]):
+		if y[i] not in classesarray:
+			classesnum = classesnum+1
+			classesarray=np.append(classesarray,y[i])
+	if 0 not in y:
+		classesarray=np.delete(classesarray,0)
+	else:
+		classesnum=classesnum+1
+	meanarray=np.zeros((classesarray.shape[0],d))
+	classesarray=np.sort(classesarray)
+	for i in range(0,classesarray.shape[0]):
+		tempcount=0
+		for j in range(0,y.shape[0]):
+			if classesarray[i]==y[j]:
+				tempcount=tempcount+1
+				for k in range(0,X.shape[1]):
+					meanarray[i][k]=meanarray[i][k]+X[j][k]
+		for p in range(0,X.shape[1]):
+			meanarray[i][p]=meanarray[i][p]/tempcount
+	
+    # initialization
+	means=np.zeros((d,classesarray.shape[0]))
+	for i in range(0,meanarray.shape[0]):
+		for j in range(0,meanarray.shape[1]):
+			means[j][i]=meanarray[i][j]
+	
+	covmats=[np.zeros((d,d))]*classesnum
+	for i in range(0,classesarray.shape[0]):
+		count=1
+		for j in range(0,y.shape[0]):
+			if classesarray[i]==y[j] and count==0:
+				temp=np.vstack((temp,X[j]))
+			elif classesarray[i]==y[j] and count==1:
+				temp=np.array(X[j])
+				count=0
+		covmats[i]=np.cov(temp.T)
 	return means,covmats
 
 def ldaTest(means,covmat,Xtest,ytest):
-	# Inputs
-	# means, covmat - parameters of the LDA model
-	# Xtest - a N x d matrix with each row corresponding to a test example
-	# ytest - a N x 1 column vector indicating the labels for each test example
-	# Outputs
-	# acc - A scalar accuracy value
-
+    # Inputs
+    # means, covmat - parameters of the LDA model
+    # Xtest - a N x d matrix with each row corresponding to a test example
+    # ytest - a N x 1 column vector indicating the labels for each test example
+    # Outputs
+    # acc - A scalar accuracy value
+    
+    # IMPLEMENT THIS METHOD
+	covmatint = np.linalg.inv(covmat)
+	covmatdet = np.linalg.det(covmat)
+	meansT=means.T
+	pi=np.pi
+	temp=np.zeros(means.shape[1])
+	count=0
+	for i in Xtest:
+		tempslice=np.array([])
+		if count==1:
+			for j in meansT:
+				tempslice=np.hstack((tempslice, ((0.5)*covmatdet*np.sqrt(2*pi))*np.exp((-0.5)*(np.dot((i-j),(i-j).T/(covmatdet**2))))))
+			temp=np.vstack((temp,tempslice.T))
+			#rint(tempslice)
+		elif count==0:
+			for j in meansT:
+				tempslice=np.hstack((tempslice, ((0.5)*covmatdet*np.sqrt(2*pi))*np.exp((-0.5)*(np.dot((i-j),(i-j).T/(covmatdet**2))))))
+			temp=tempslice
+			count=1
+	prob = np.argmax(temp, axis=1)
+	prob = np.add(prob,1)
+	acc = 0.0
+	#If our value is true then our predicition matches the ytest
+	for i in range(0,ytest.shape[0]):
+		if (ytest[i][0] == prob[i]):
+			acc = acc + 1
+	acc = acc/temp.shape[0]
 	# IMPLEMENT THIS METHOD
 	return acc
-
+		
 def qdaTest(means,covmats,Xtest,ytest):
-	# Inputs
-	# means, covmats - parameters of the QDA model
-	# Xtest - a N x d matrix with each row corresponding to a test example
-	# ytest - a N x 1 column vector indicating the labels for each test example
-	# Outputs
-	# acc - A scalar accuracy value
-
+    # Inputs
+    # means, covmat - parameters of the LDA model
+    # Xtest - a N x d matrix with each row corresponding to a test example
+    # ytest - a N x 1 column vector indicating the labels for each test example
+    # Outputs
+    # acc - A scalar accuracy value
+    
+    # IMPLEMENT THIS METHOD
+	covmatint = np.linalg.inv(covmat)
+	covmatdet = np.linalg.det(covmat)
+	meansT=means.T
+	pi=np.pi
+	temp=np.zeros(means.shape[1])
+	count=0
+	for i in Xtest:
+		tempslice=np.array([])
+		if count==1:
+			for j in meansT:
+				tempslice=np.hstack((tempslice, ((0.5)*covmatdet*np.sqrt(2*pi))*np.exp((-0.5)*(np.dot((i-j),(i-j).T/(covmatdet**2))))))
+			temp=np.vstack((temp,tempslice.T))
+			#print(tempslice)
+		elif count==0:
+			for j in meansT:
+				tempslice=np.hstack((tempslice, ((0.5)*covmatdet*np.sqrt(2*pi))*np.exp((-0.5)*(np.dot((i-j),(i-j).T/(covmatdet**2))))))
+			temp=tempslice
+			count=1
+	prob = np.argmax(temp, axis=1)
+	prob = np.add(prob,1)
+	acc = 0.0
+	#If our value is true then our predicition matches the ytest
+	for i in range(0,ytest.shape[0]):
+		if (ytest[i][0] == prob[i]):
+			acc = acc + 1
+	acc = acc/temp.shape[0]
 	# IMPLEMENT THIS METHOD
 	return acc
-'''
 def learnOLERegression(X,y):
 	# Inputs:                                                         
 	# X = N x d 
